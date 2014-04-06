@@ -14,7 +14,8 @@ So here's how to use this class:
 ```c++
 auto someWidget = GetSomeUIWidget();  
 Dispatcher dispatcher(someWidget); // now the dispatcher works on the thread Qt assigns to someWidget  
-dispatcher.Invoke([=] { doSomething(); }); // will be invoked on someWidget's thread, and block this thread until that ones completes```
+dispatcher.Invoke([=] { doSomething(); }); // will be invoked on someWidget's thread, and block this thread until that ones completes
+```
 
 The `Invoke` function blocks the calling thread until the operation has been performed on the widget's thread.
 It may also return values, as in the following example:
