@@ -1,4 +1,4 @@
-qtdispatcher
+Qt Dispatcher
 ============
 
 A Dispatcher object (similar to the one in WPF) for the Qt Framework, written in C++11.
