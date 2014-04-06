@@ -25,6 +25,6 @@ It may also return values, as in the following example:
 If the returned value is not a primitive, then it will either be copied or moved to the calling thread, depending on which constructor is available for its class.
 
 `Invoke` will also propagate any exceptions thrown in the other thread right into the calling thread, so you may wrap the call to Invoke with a try/catch if you wish.
-If you know what you're doing, there's no problem dispatching a lambda which captures state from the calling thread. Since `Invoke` blocks, any existing state in the thread's stack will be in tact while running the function on the destination thread.
+If you know what you're doing, there's no problem dispatching a lambda which captures state from the calling thread. Since `Invoke` blocks, any existing state in the thread's stack will be intact while running the function on the destination thread.
 
 There is also an alternative `FireAndForget` function, which does not block, and hence does not run any function which returns a value. This can also be useful sometimes.
