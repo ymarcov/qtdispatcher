@@ -18,7 +18,7 @@ public:
 	struct Task
 	{
 		template <typename Result>
-		static Task Create(typename std::enable_if<!std::is_void<Result>::value &&
+		static Task create(typename std::enable_if<!std::is_void<Result>::value &&
 			!std::is_reference<Result>::value, std::function<Result()>>::type f)
 		{
 			return Task([=](void** result, std::exception_ptr& e)
@@ -35,7 +35,7 @@ public:
 		}
 
 		template <typename Result>
-		static Task Create(typename std::enable_if<!std::is_void<Result>::value &&
+		static Task create(typename std::enable_if<!std::is_void<Result>::value &&
 			std::is_reference<Result>::value, std::function<Result()>>::type f)
 		{
 			return Task([=](void** result, std::exception_ptr& e)
@@ -52,7 +52,7 @@ public:
 		}
 
 		template <typename Result>
-		static Task Create(typename std::enable_if<std::is_void<Result>::value, std::function<void()>>::type f)
+		static Task create(typename std::enable_if<std::is_void<Result>::value, std::function<void()>>::type f)
 		{
 			return Task([=](void**, std::exception_ptr& e)
 			{
@@ -67,7 +67,7 @@ public:
 			});
 		}
 
-		static Task CreateFireAndForget(std::function<void()> f)
+		static Task createFireAndForget(std::function<void()> f)
 		{
 			return Task([=](void**, std::exception_ptr&)
 			{
@@ -89,7 +89,7 @@ public:
 		}
 
 		template <typename Result>
-		typename std::enable_if<!std::is_void<Result>::value && std::is_reference<Result>::value, Result>::type Get()
+		typename std::enable_if<!std::is_void<Result>::value && std::is_reference<Result>::value, Result>::type get()
 		{
 			if (_exception)
 				std::rethrow_exception(_exception);
@@ -98,7 +98,7 @@ public:
 		}
 
 		template <typename Result>
-		typename std::enable_if<!std::is_void<Result>::value && !std::is_reference<Result>::value, Result>::type Get()
+		typename std::enable_if<!std::is_void<Result>::value && !std::is_reference<Result>::value, Result>::type get()
 		{
 			typedef std::decay<Result>::type RawType;
 
@@ -111,7 +111,7 @@ public:
 		}
 
 		template <typename Result>
-		typename std::enable_if<std::is_void<Result>::value, void>::type Get()
+		typename std::enable_if<std::is_void<Result>::value, void>::type get()
 		{
 			if (_exception)
 				std::rethrow_exception(_exception);
@@ -129,36 +129,36 @@ public:
 	// Runs a function and returns its possible value.
 	// If the function throws an exception, it will be re-thrown here.
 	template <typename Func>
-	auto Invoke(Func f) const -> decltype(f())
+	auto invoke(Func f) const -> decltype(f())
 	{
 		typedef decltype(f()) Result;
 
-		Task task = Task::Create<Result>(std::function<Result()>(std::forward<Func>(f)));
+		Task task = Task::create<Result>(std::function<Result()>(std::forward<Func>(f)));
 		QMetaObject::invokeMethod(
 			const_cast<Dispatcher*>(this),
-			"Dispatch",
+			"dispatch",
 			Qt::BlockingQueuedConnection,
 			Q_ARG(QVariant, QVariant::fromValue(reinterpret_cast<intptr_t>(&task)))
 		);
-		return task.Get<Result>();
+		return task.get<Result>();
 	}
 
 	// Runs a function on a the dispatcher's thread.
 	// Exceptions are caught by the dispatcher's message loop.
 	template <typename Action>
-	void FireAndForget(Action f) const
+	void fireAndForget(Action f) const
 	{
-		Task task = Task::CreateFireAndForget(std::function<void()>(std::forward<Action>(f)));
+		Task task = Task::createFireAndForget(std::function<void()>(std::forward<Action>(f)));
 		QMetaObject::invokeMethod(
 			const_cast<Dispatcher*>(this),
-			"Dispatch",
+			"dispatch",
 			Qt::QueuedConnection,
 			Q_ARG(QVariant, QVariant::fromValue(task))
 		);
 	}
 
 private:
-	Q_INVOKABLE void Dispatch(QVariant var)
+	Q_INVOKABLE void dispatch(QVariant var)
 	{
 		if (var.canConvert<intptr_t>()) // blocking connection, pointer to callable on diff thread
 			reinterpret_cast<Task*>(var.value<intptr_t>())->operator()();
