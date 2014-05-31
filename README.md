@@ -12,7 +12,7 @@ If you tried to do that from a different thread, the behavior, in most cases, wo
 So here's how to use this class:
 
 ```c++
-auto someWidget = GetSomeUIWidget();  
+QObject* someWidget = GetSomeUIWidget();  
 Dispatcher dispatcher(someWidget); // now the dispatcher works on the thread Qt assigns to someWidget  
 dispatcher.invoke([=] { doSomething(); }); // will be invoked on someWidget's thread, and block this thread until that ones completes
 ```
