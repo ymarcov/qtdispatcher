@@ -14,7 +14,7 @@ So here's how to use this class:
 ```c++
 QObject* someWidget = GetSomeUIWidget();  
 Dispatcher dispatcher(someWidget); // now the dispatcher works on the thread Qt assigns to someWidget  
-dispatcher.invoke([=] { doSomething(); }); // will be invoked on someWidget's thread, and block this thread until that ones completes
+dispatcher.invoke([=] { doSomething(); }); // will be invoked on someWidget's thread, and block this thread until that one's completes
 ```
 
 The `Invoke` function blocks the calling thread until the operation has been performed on the widget's thread.
