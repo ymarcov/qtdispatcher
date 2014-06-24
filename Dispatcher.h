@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QMetaObject>
+#include <QThread>
 #include <QVariant>
 #include <exception>
 #include <functional>
@@ -137,7 +138,7 @@ public:
 		QMetaObject::invokeMethod(
 			const_cast<Dispatcher*>(this),
 			"dispatch",
-			Qt::BlockingQueuedConnection,
+			QThread::currentThread() == thread() ? Qt::DirectConnection : Qt::BlockingQueuedConnection,
 			Q_ARG(QVariant, QVariant::fromValue(reinterpret_cast<intptr_t>(&task)))
 		);
 		return task.get<Result>();
