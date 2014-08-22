@@ -6,6 +6,7 @@
 #include <QVariant>
 #include <exception>
 #include <functional>
+#include <memory>
 #include <type_traits>
 
 namespace ymarcov {
@@ -26,7 +27,7 @@ public:
 			{
 				try
 				{
-					*result = new std::decay<decltype(f())>::type(f());
+					*result = new typename std::decay<decltype(f())>::type(f());
 				}
 				catch (...)
 				{
@@ -43,7 +44,7 @@ public:
 			{
 				try
 				{
-					*result = const_cast<std::decay<decltype(f())>::type*>(&f());
+					*result = const_cast<typename std::decay<decltype(f())>::type*>(&f());
 				}
 				catch (...)
 				{
@@ -95,13 +96,13 @@ public:
 			if (_exception)
 				std::rethrow_exception(_exception);
 
-			return std::forward<Result>(*static_cast<std::decay<Result>::type*>(_result));
+			return std::forward<Result>(*static_cast<typename std::decay<Result>::type*>(_result));
 		}
 
 		template <typename Result>
 		typename std::enable_if<!std::is_void<Result>::value && !std::is_reference<Result>::value, Result>::type get()
 		{
-			typedef std::decay<Result>::type RawType;
+			typedef typename std::decay<Result>::type RawType;
 
 			std::unique_ptr<RawType> ptr(static_cast<RawType*>(_result));
 
