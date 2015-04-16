@@ -131,7 +131,7 @@ public:
 	// Runs a function and returns its possible value.
 	// If the function throws an exception, it will be re-thrown here.
 	template <typename Func>
-	auto invoke(Func f) const -> decltype(f())
+	auto invoke(Func&& f) const -> decltype(f())
 	{
 		typedef decltype(f()) Result;
 
@@ -148,7 +148,7 @@ public:
 	// Runs a function on a the dispatcher's thread.
 	// Exceptions are caught by the dispatcher's message loop.
 	template <typename Action>
-	void fireAndForget(Action f) const
+	void fireAndForget(Action&& f) const
 	{
 		Task task = Task::createFireAndForget(std::function<void()>(std::forward<Action>(f)));
 		QMetaObject::invokeMethod(
