@@ -4,7 +4,7 @@ Qt Dispatcher
 A Dispatcher object (similar to the one in WPF) for the Qt Framework, written in C++11.
 
 This class can be used to invoke functions (including function objects and lambdas) on a specific Qt thread.
-It's primary purpose is to be able, from background worker threads, to cause actions to be performed on the UI thread which dispatched them.
+Its primary purpose is to be able, from background worker threads, to cause actions to be performed on the UI thread which dispatched them.
 
 A good example is when you want to notify the UI thread of some progress your background thread has made.
 If you tried to do that from a different thread, the behavior, in most cases, would be undefined, since (especially in multi-core systems) you'd be getting in the way of the UI thread doing whatever it needs to do, like dispatching events, drawing, etc.
