@@ -31,8 +31,8 @@
 #include <memory>
 #include <type_traits>
 
-namespace ymarcov {
-namespace qt {
+namespace Yam {
+namespace Qt {
 
 class Dispatcher : public QObject
 {
@@ -191,7 +191,7 @@ private:
     }
 };
 
-} // namespace qt
-} // namespace ymarcov
+} // namespace Qt
+} // namespace Yam
 
-Q_DECLARE_METATYPE(ymarcov::qt::Dispatcher::Task);
+Q_DECLARE_METATYPE(Yam::Qt::Dispatcher::Task);
